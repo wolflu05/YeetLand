@@ -38,6 +38,8 @@ jobs:
     needs: build-js
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      contents: write
 
     steps:
       - name: Download frontend artifact

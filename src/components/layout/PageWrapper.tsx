@@ -76,6 +76,7 @@ export default function PageWrapper({ children }: { children: React.ReactNode })
                 <a href="https://github.com/wolflu05/YeetLand" target="_blank" rel="noreferrer noopener" style={{ height: "25px" }}>
                   <IconBrandGithub size="25px" color="#fff" />
                 </a>
+                v{__APP_VERSION__}
               </Group>
             </Stack>
           </AppShell.Navbar>
