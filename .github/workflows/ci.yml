@@ -30,7 +30,7 @@ jobs:
       - name: Upload frontend artifact
         uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # pin@v3.1.2
         with:
-          name: frontend-build
+          name: yeetland-build
           path: dist
 
   release:
@@ -43,19 +43,19 @@ jobs:
       - name: Download frontend artifact
         uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # pin@v3.0.2
         with:
-          name: frontend-build
+          name: yeetland-build
           path: dist
 
       - name: Zip frontend
         run: |
           cd dist
-          zip -r ../frontend-build.zip * .vite
+          zip -r ../yeetland-build.zip * .vite
 
       - name: Upload frontend
         uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # pin@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: frontend-build.zip
-          asset_name: frontend-build.zip
+          file: yeetland-build.zip
+          asset_name: yeetland-build.zip
           tag: ${{ github.ref }}
           overwrite: true
