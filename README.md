@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD041 MD033 -->
-<div style="display: 'flex'; flex-wrap: no-wrap; align-items: center;">
-    <img src="public/YeetLand.png" alt="logo" width="30" height="auto" />
-    <h1 style="display: inline">YeetLand</h1>
+<div align="center">
+    <img src="public/YeetLand.png" alt="logo" width="100" height="auto" />
+    <h1>YeetLand</h1>
 </div>
 <br />
 
