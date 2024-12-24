@@ -19,7 +19,7 @@ def authenticate(session: Session) -> None:
 
 
 def start_server(session: Session):
-    from flask import Flask, jsonify, request
+    from flask import Flask, jsonify, request, send_from_directory, send_file
 
     app = Flask(__name__)
 
@@ -41,6 +41,22 @@ def start_server(session: Session):
         if request.method == "POST":
             session.post(f"/{path}", request.json)
             return jsonify({})
+
+    @app.route("/", methods=["GET"])
+    def serve_index():
+        return send_file("yeetland-build/index.html")
+
+    @app.route("/assets/<path:path>", methods=["GET"])
+    def serve_assets(path):
+        return send_from_directory("yeetland-build/assets", path)
+    
+    @app.route("/YeetLand.png", methods=["GET"])
+    def serve_logo():
+        return send_file("YeetLand.png")
+    
+    @app.route("/<path:path>", methods=["GET"])
+    def serve_index_files(path):
+        return send_file("yeetland-build/index.html")
 
     app.run("localhost", "8763")
 
