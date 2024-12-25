@@ -42,20 +42,17 @@ def start_server(session: Session):
             session.post(f"/{path}", request.json)
             return jsonify({})
 
-    @app.route("/", methods=["GET"])
-    def serve_index():
-        return send_file("yeetland-build/index.html")
-
     @app.route("/assets/<path:path>", methods=["GET"])
     def serve_assets(path):
         return send_from_directory("yeetland-build/assets", path)
     
     @app.route("/YeetLand.png", methods=["GET"])
     def serve_logo():
-        return send_file("YeetLand.png")
+        return send_file("yeetland-build/YeetLand.png")
     
+    @app.route("/", methods=["GET"])
     @app.route("/<path:path>", methods=["GET"])
-    def serve_index_files(path):
+    def serve_index(**kwargs):
         return send_file("yeetland-build/index.html")
 
     app.run("localhost", "8763")
