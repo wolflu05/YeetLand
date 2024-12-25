@@ -1,0 +1,10 @@
+services:
+  yeetland:
+    image: yeetland:latest
+    restart: unless-stopped
+    ports:
+      - "8000:8763"
+    volumes:
+      - ./.token:/app/.token
+    environment:
+      AUTH_STORE_PATH: /app/.token

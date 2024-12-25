@@ -33,3 +33,6 @@ __pycache__
 
 # uni provided files
 prelude.py
+
+yeetland-build/
+.token

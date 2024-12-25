@@ -1,6 +1,7 @@
 import sys
 from prelude import Session
 from getpass import getpass
+from typing import Any
 
 
 def authenticate(session: Session) -> None:
@@ -18,7 +19,7 @@ def authenticate(session: Session) -> None:
             print("Fehler beim Anmelden, probiere es erneut!\n\n")
 
 
-def start_yeetland(session: Session):
+def start_yeetland(session: Session, host: str):
     from flask import Flask, jsonify, request, send_from_directory, send_file
     import os
 
@@ -96,7 +97,7 @@ def start_yeetland(session: Session):
     def serve_index(**kwargs):  # type: ignore
         return send_file("yeetland-build/index.html")
 
-    app.run("localhost", 8763)
+    app.run(host, 8763)
 
 
 if __name__ == "__main__":
@@ -104,5 +105,7 @@ if __name__ == "__main__":
     authenticate(session)
 
     match sys.argv[1:]:
+        case ["yeetland", str(x)]:
+            start_yeetland(session, x)
         case ["yeetland"]:
-            start_yeetland(session)
+            start_yeetland(session, "localhost")

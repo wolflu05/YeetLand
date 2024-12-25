@@ -1,0 +1,6 @@
+yeetland-build/
+node_modules/
+.venv/
+.git/
+.vscode/
+.token
