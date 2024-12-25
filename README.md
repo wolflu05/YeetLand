@@ -18,11 +18,10 @@ YeetLand is a simple graphical interface for the Yeet Social network in the brow
 
 ## 🚀 Installation
 
-1. Copy the `web_client.py` file some folder together with the `exercise-10/prelude.py` file
+1. Copy the [`web_client.py`](https://github.com/wolflu05/YeetLand/blob/main/web_client.py) file to some folder together with the `exercise-10/prelude.py` file (if you directly choose your exercise repository, make sure that you do not commit those files)
 2. Install the dependencies via `pip install flask requests`
-3. Download the latest `yeetland-build.zip` from [the releases](https://github.com/wolflu05/YeetLand/releases) and unpack it next to the other two files, so that there is a folder `yeetland-build` with the `index.html`, ...
-4. Start the Server via `python web_client.py web`
-5. The client is now reachable from your browser under `http://localhost:8763`
+3. Start the Server via `python web_client.py yeetland`. On the first start you get asked to download the yeetland-build. Enter `y` to do this automatically.
+4. The client is now reachable from your browser under `http://localhost:8763`
 
 ## 🛠️ Development Setup
 
