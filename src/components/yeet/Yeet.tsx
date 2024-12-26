@@ -1,7 +1,7 @@
-import { Button, ButtonGroup, Drawer, Group, Paper, Stack, Text } from "@mantine/core";
+import { Button, ButtonGroup, Drawer, Group, Paper, Space, Stack, Text } from "@mantine/core";
 import { formatTimestamp, PromiseAllObject } from "../../utils";
 import { IconArrowForward, IconExternalLink, IconThumbUp, IconTrash } from "@tabler/icons-react";
-import { createLike, getYeetLikes, getYeetReplies, removeLike, removeYeet, YeetT } from "../../utils/api";
+import { createLike, getYeet, getYeetLikes, getYeetReplies, removeLike, removeYeet, YeetT } from "../../utils/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { modals } from "@mantine/modals";
 import { useMe } from "../../hooks/useMe";
@@ -14,7 +14,7 @@ import { useLongPress } from "@uidotdev/usehooks";
 import { useDisclosure } from "@mantine/hooks";
 import { User } from "./User";
 
-export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity }: { yeet: YeetT, depth?: number, maxDepth?: number }) => {
+export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity, compact = false }: { yeet: YeetT, depth?: number, maxDepth?: number, compact?: boolean }) => {
   const detailQuery = useQuery({
     queryKey: ['yeets', yeet.yeet_id, { type: 'detail' }],
     queryFn: () => PromiseAllObject({
@@ -23,6 +23,13 @@ export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity }: { yeet: YeetT, de
     }),
     staleTime: 1000 * 10,
   });
+  const replyToQuery = useQuery({
+    queryKey: ['yeets', yeet.reply_to],
+    queryFn: () => getYeet(yeet.reply_to!),
+    enabled: !!yeet.reply_to,
+    staleTime: Infinity,
+  });
+
   const me = useMe();
   const queryClient = useQueryClient();
 
@@ -70,7 +77,16 @@ export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity }: { yeet: YeetT, de
   const [showReplies, setShowReplies] = useState(depth < maxDepth);
 
   return (
-    <Paper withBorder p="sm">
+    <Paper withBorder p="sm" bg={(!yeet.reply_to && depth == 0) ? "var(--mantine-color-dark-8)" : undefined}>
+      {depth === 0 && yeet.reply_to && replyToQuery.data && (
+        <>
+          <Link to="/explore/$yeetId" params={{ yeetId: `${yeet.reply_to}` }} style={{ color: "inherit", textDecoration: "none", opacity: 0.5 }}>
+            <Yeet yeet={replyToQuery.data.response} depth={depth + 1} maxDepth={maxDepth} compact />
+          </Link>
+          <Space h="sm" />
+        </>
+      )}
+
       <Group justify="space-between">
         <Stack gap="4px" miw="200px" w="100%">
           <Text style={{ overflowWrap: "break-word" }}>{yeet.content}</Text>
@@ -83,7 +99,7 @@ export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity }: { yeet: YeetT, de
           </Group>
         </Stack>
 
-        <ButtonGroup>
+        {!compact && <ButtonGroup>
           {me?.username === yeet.author && (
             <Button
               variant="outline"
@@ -125,10 +141,10 @@ export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity }: { yeet: YeetT, de
           <Button variant="outline" size="sm" px={10} component={Link} to="/explore/$yeetId" params={{ yeetId: `${yeet.yeet_id}` } as any}>
             <IconExternalLink size={18} />
           </Button>
-        </ButtonGroup>
+        </ButtonGroup>}
       </Group>
 
-      {detailQuery.data && detailQuery.data.replies.response.length > 0 && (showReplies ? (
+      {!compact && detailQuery.data && detailQuery.data.replies.response.length > 0 && (showReplies ? (
         <Stack gap="xs" mt="sm" ml="lg">
           <YeetList yeetIds={detailQuery.data?.replies.response ?? []} maxLoad={Infinity} depth={depth + 1} maxDepth={maxDepth} />
         </Stack>
