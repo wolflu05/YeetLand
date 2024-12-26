@@ -20,7 +20,7 @@ const NAV_LINKS: {
   ];
 
 export default function PageWrapper({ children }: { children: React.ReactNode }) {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const isMobile = useMediaQuery(`(max-width: ${em(767)})`);
 
   const [createYeetModalOpened, setCreateYeetModalOpened] = useState(false);
@@ -45,6 +45,7 @@ export default function PageWrapper({ children }: { children: React.ReactNode })
             <Stack gap="xs">
               {NAV_LINKS.map(({ href, label, icon }) => (
                 <NavLink
+                  onClick={close}
                   key={href}
                   component={Link}
                   to={href}
