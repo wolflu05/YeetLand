@@ -57,7 +57,7 @@ export const YeetList = ({ yeetIds: _yeetIds, maxLoad = 10, depth = 0, showRootR
 
   return (
     <Stack gap="xs" ref={stackRef}>
-      <Stack gap="lg">
+      <Stack gap={depth === 0 ? "xl" : "md"}>
         {activeYeets
           .map((query) => (
             query.data && <Yeet key={query.data.response.yeet_id} yeet={query.data?.response} depth={depth} maxDepth={maxDepth} />
