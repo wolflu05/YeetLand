@@ -38,13 +38,14 @@ function RouteComponent() {
   const [includeNonFollowingUsers, setIncludeNonFollowingUsers] = useState(false);
 
   const data = useMemo<NetworkData>(() => {
-    const nodes = [...new Set([
+    const usersSet = new Set([
       ...Object.keys(allUsersFollowingQuery.data ?? {}),
-      ...Object.values(allUsersFollowingQuery.data ?? {}).flat()
-    ])].map(x => ({ id: x, followers: 0 }));
+    ]);
+    const nodes = [...usersSet].map(x => ({ id: x, followers: 0 }));
 
     const links = Object.entries(allUsersFollowingQuery.data ?? {})
-      .flatMap(([source, targets]) => targets.map((target: any) => ({ source, target })));
+      .flatMap(([source, targets]) => targets.map((target: any) => ({ source, target })))
+      .filter((({ source, target }) => usersSet.has(source) && usersSet.has(target)));
 
     if (!includeNonFollowingUsers) {
       const activeUsers = new Set(links.flatMap((link) => [link.source, link.target]));
