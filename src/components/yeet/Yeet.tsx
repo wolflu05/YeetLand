@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Group, Paper, Stack, Text } from "@mantine/core";
+import { Button, ButtonGroup, Drawer, Group, Paper, Stack, Text } from "@mantine/core";
 import { formatTimestamp, PromiseAllObject } from "../../utils";
 import { IconArrowForward, IconExternalLink, IconThumbUp, IconTrash } from "@tabler/icons-react";
 import { createLike, getYeetLikes, getYeetReplies, removeLike, removeYeet, YeetT } from "../../utils/api";
@@ -10,8 +10,11 @@ import { Link } from "@tanstack/react-router";
 import { YeetList } from "./YeetList";
 import { useState } from "react";
 import { CreateYeetModal } from "../modals/CreateYeetModal";
+import { useLongPress } from "@uidotdev/usehooks";
+import { useDisclosure } from "@mantine/hooks";
+import { User } from "./User";
 
-export const Yeet = ({ yeet, depth = 0 }: { yeet: YeetT, depth?: number }) => {
+export const Yeet = ({ yeet, depth = 0, maxDepth = Infinity }: { yeet: YeetT, depth?: number, maxDepth?: number }) => {
   const detailQuery = useQuery({
     queryKey: ['yeets', yeet.yeet_id, { type: 'detail' }],
     queryFn: () => PromiseAllObject({
@@ -59,10 +62,17 @@ export const Yeet = ({ yeet, depth = 0 }: { yeet: YeetT, depth?: number }) => {
 
   const [replyOpen, setReplyOpen] = useState(false);
 
+  const likeButtonProps = useLongPress(() => openLikeDrawer(), {
+    onCancel: () => toggleLike.mutate(),
+  });
+  const [likeDrawerOpen, { open: openLikeDrawer, close: closeLikeDrawer }] = useDisclosure(false);
+
+  const [showReplies, setShowReplies] = useState(depth < maxDepth);
+
   return (
     <Paper withBorder p="sm">
       <Group justify="space-between">
-        <Stack gap="4px" flex={1} w="100%">
+        <Stack gap="4px" miw="200px" w="100%">
           <Text style={{ overflowWrap: "break-word" }}>{yeet.content}</Text>
 
           <Group gap="xs">
@@ -94,12 +104,14 @@ export const Yeet = ({ yeet, depth = 0 }: { yeet: YeetT, depth?: number }) => {
               {detailQuery.data?.replies.response.length}
             </Text>
           </Button>
+
           <Button
             variant={me && detailQuery.data?.likes.response.includes(me?.username) ? "filled" : "outline"}
             size="sm"
             px={10}
             loading={detailQuery.isLoading || toggleLike.isPending}
-            onClick={() => toggleLike.mutate()}
+            {...likeButtonProps}
+            style={{ userSelect: "none", WebkitUserSelect: "none" }}
           >
             <Tooltip label={detailQuery.data?.likes.response.join(", ")}>
               <IconThumbUp size={18} />
@@ -116,13 +128,23 @@ export const Yeet = ({ yeet, depth = 0 }: { yeet: YeetT, depth?: number }) => {
         </ButtonGroup>
       </Group>
 
-      {detailQuery.data && detailQuery.data.replies.response.length > 0 && (
+      {detailQuery.data && detailQuery.data.replies.response.length > 0 && (showReplies ? (
         <Stack gap="xs" mt="sm" ml="lg">
-          <YeetList yeetIds={detailQuery.data?.replies.response ?? []} maxLoad={Infinity} depth={depth + 1} />
+          <YeetList yeetIds={detailQuery.data?.replies.response ?? []} maxLoad={Infinity} depth={depth + 1} maxDepth={maxDepth} />
         </Stack>
-      )}
+      ) : (
+        <Button onClick={() => setShowReplies(true)} mt="sm" variant="outline">Load replies</Button>
+      ))}
 
       <CreateYeetModal opened={replyOpen} setOpened={setReplyOpen} reply_to={yeet.yeet_id} />
+
+      <Drawer position="bottom" opened={likeDrawerOpen} onClose={closeLikeDrawer} title="Likes" styles={{ title: { fontSize: "20px" } }}>
+        <Stack gap="xs">
+          {detailQuery.data?.likes.response.map((username) => (
+            <User key={username} user={username} size="wide" />
+          ))}
+        </Stack>
+      </Drawer>
     </Paper >
   )
 }

@@ -109,7 +109,7 @@ function RouteComponent() {
           </Accordion.Control>
           <Accordion.Panel>
             <Group grow mt={10}>
-              <YeetList yeetIds={userQuery.data?.yeets.response ?? []} />
+              <YeetList yeetIds={userQuery.data?.yeets.response ?? []} showRootReplies maxDepth={0} />
             </Group>
           </Accordion.Panel>
         </Accordion.Item>
@@ -124,7 +124,7 @@ function RouteComponent() {
           <Accordion.Panel>
             <Group grow mt={10}>
               <Group grow mt={10}>
-                <YeetList yeetIds={userQuery.data?.likes.response ?? []} />
+                <YeetList yeetIds={userQuery.data?.likes.response ?? []} showRootReplies maxDepth={0} />
               </Group>
             </Group>
           </Accordion.Panel>

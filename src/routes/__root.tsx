@@ -9,8 +9,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   component: () => (
     <PageWrapper>
       <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {import.meta.env.DEV && (
+        <>
+          <TanStackRouterDevtools position="bottom-right" />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </>
+      )}
     </PageWrapper>
   ),
 })

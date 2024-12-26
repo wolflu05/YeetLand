@@ -44,8 +44,9 @@ function RouteComponent() {
         return userQuery.data?.response ?? []
       }
 
+      const search = debouncedSearchValue.toLowerCase()
       return userQuery.data?.response.filter((user) =>
-        user.includes(debouncedSearchValue)
+        user.includes(search)
       ) ?? []
     },
     [debouncedSearchValue, userQuery.data],

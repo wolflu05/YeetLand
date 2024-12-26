@@ -4,8 +4,8 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { PromiseAllObject } from "../utils";
 import { NetworkData, NetworkDiagram } from "../components/items/NetworkDiagram";
 import { useMemo, useState } from "react";
-import { Accordion, Container, Paper, Stack, Switch } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
+import { Accordion, Container, em, Paper, Stack, Switch } from "@mantine/core";
+import { useElementSize, useMediaQuery } from "@mantine/hooks";
 import { Slider } from "../components/items/Slider";
 
 const allUsersFollowingQueryOptions = queryOptions({
@@ -33,6 +33,7 @@ export const Route = createFileRoute('/users/network')({
 })
 
 function RouteComponent() {
+  const isMobile = useMediaQuery(`(max-width: ${em(767)})`);
   const allUsersFollowingQuery = useSuspenseQuery(allUsersFollowingQueryOptions);
 
   const [includeNonFollowingUsers, setIncludeNonFollowingUsers] = useState(false);
@@ -71,12 +72,13 @@ function RouteComponent() {
     <Container ref={ref as any} h="90vh">
       <Stack style={{
         position: "absolute",
-        top: 20,
-        right: 20,
+        top: isMobile ? 70 : 20,
+        right: isMobile ? 7 : 20,
         width: 300,
+        opacity: 0.9,
       }}>
         <Paper withBorder>
-          <Accordion>
+          <Accordion >
             <Accordion.Item value="settings">
               <Accordion.Control>Settings</Accordion.Control>
               <Accordion.Panel>
